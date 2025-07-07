@@ -3,8 +3,11 @@ package com.prueba.banco.domain.model;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -13,6 +16,9 @@ import java.util.Objects;
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue("CORRIENTE")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public class CuentaCorriente extends Producto {
     @Override
     public void validarSaldo(BigDecimal monto) {

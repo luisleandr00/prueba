@@ -49,21 +49,39 @@ public class TransaccionesServices {
         Producto cuenta = productoRepository.buscarPorNumeroCuenta(numeroCuenta)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
 
-        // Validar el saldo (el monto debe ser negativo para retiros)
+
         cuenta.validarSaldo(monto.negate());
 
-        // Actualizar saldo
+
         cuenta.setSaldo(cuenta.getSaldo().subtract(monto));
 
-        // Guardar cambios
         productoRepository.guardar(cuenta);
 
-        // Crear y retornar la transacción
+
         return transaccionRepository.guardar(
                 Transacciones.builder()
                         .tipo("RETIRO")
                         .monto(monto)
                         .productoOrigen(cuenta)
+                        .fecha(LocalDateTime.now())
+                        .estado("EXITOSA")
+                        .build()
+        );
+    }
+    public Transacciones realizarConsignacion(String numeroCuenta, BigDecimal monto) {
+        Producto cuenta = productoRepository.buscarPorNumeroCuenta(numeroCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+
+        cuenta.validarSaldo(monto); // Valida estado de la cuenta
+        cuenta.setSaldo(cuenta.getSaldo().add(monto));
+
+        productoRepository.guardar(cuenta);
+
+        return transaccionRepository.guardar(
+                Transacciones.builder()
+                        .tipo("CONSIGNACION")
+                        .monto(monto)
+                        .productoDestino(cuenta)
                         .fecha(LocalDateTime.now())
                         .estado("EXITOSA")
                         .build()
