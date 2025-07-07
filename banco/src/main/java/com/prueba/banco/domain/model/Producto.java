@@ -2,6 +2,7 @@ package com.prueba.banco.domain.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,6 +11,9 @@ import java.time.LocalDateTime;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_cuenta")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public abstract class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
