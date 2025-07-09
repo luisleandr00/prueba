@@ -72,7 +72,7 @@ public class TransaccionesServices {
         Producto cuenta = productoRepository.buscarPorNumeroCuenta(numeroCuenta)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
 
-        cuenta.validarSaldo(monto); // Valida estado de la cuenta
+        cuenta.validarSaldo(monto);
         cuenta.setSaldo(cuenta.getSaldo().add(monto));
 
         productoRepository.guardar(cuenta);
