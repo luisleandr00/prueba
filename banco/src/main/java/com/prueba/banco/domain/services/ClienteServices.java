@@ -30,12 +30,12 @@ public class ClienteServices {
                 throw new IllegalArgumentException("El cliente debe ser mayor de edad");
             }
 
-            // Validar email
+
             if (clienteActualizado.getEmail() != null && !clienteActualizado.getEmail().matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
                 throw new IllegalArgumentException("Formato de email inválido");
             }
 
-            // Validar nombres y apellidos
+
             if (clienteActualizado.getNombres() != null && clienteActualizado.getNombres().length() < 2) {
                 throw new IllegalArgumentException("El nombre debe tener al menos 2 caracteres");
             }

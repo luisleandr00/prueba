@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_cuenta")
+@DiscriminatorColumn(name = "tipo_cuenta", discriminatorType = DiscriminatorType.STRING)
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

@@ -22,14 +22,28 @@ public class ProductoServices {
         Cliente cliente = clienteRepository.buscarPorId(clienteId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
 
-        CuentaAhorros cuenta = CuentaAhorros.builder()
-                .tipoCuenta("AHORROS")
-                .numeroCuenta(generarNumeroCuenta("53"))
-                .estado("ACTIVA")
-                .saldo(BigDecimal.ZERO)
-                .exentaGMF(exentaGMF)
-                .cliente(cliente)
-                .build();
+        CuentaAhorros cuenta = new CuentaAhorros(); // Usa constructor o builder
+        cuenta.setTipoCuenta("AHORROS");
+        cuenta.setNumeroCuenta(generarNumeroCuenta("53"));
+        cuenta.setEstado("ACTIVA");
+        cuenta.setSaldo(BigDecimal.ZERO);
+        cuenta.setExentaGMF(exentaGMF);
+        cuenta.setCliente(cliente);
+
+        return productoRepository.guardar(cuenta);
+    }
+
+    public Producto crearCuentaCorriente(Long clienteId, boolean exentaGMF) {
+        Cliente cliente = clienteRepository.buscarPorId(clienteId)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
+
+        CuentaCorriente cuenta = new CuentaCorriente();
+        cuenta.setTipoCuenta("AHORROS");
+        cuenta.setNumeroCuenta(generarNumeroCuenta("53"));
+        cuenta.setEstado("ACTIVA");
+        cuenta.setSaldo(BigDecimal.ZERO);
+        cuenta.setExentaGMF(exentaGMF);
+        cuenta.setCliente(cliente);
 
         return productoRepository.guardar(cuenta);
     }
@@ -38,21 +52,7 @@ public class ProductoServices {
         return prefijo + String.format("%08d", new Random().nextInt(100000000));
     }
 
-    public Producto crearCuentaCorriente(Long clienteId, boolean exentaGMF) {
-        Cliente cliente = clienteRepository.buscarPorId(clienteId)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
 
-        CuentaCorriente cuenta = CuentaCorriente.builder()
-                .tipoCuenta("CORRIENTE")
-                .numeroCuenta(generarNumeroCuenta("33"))
-                .estado("ACTIVA")
-                .saldo(BigDecimal.ZERO)
-                .exentaGMF(exentaGMF)
-                .cliente(cliente)
-                .build();
-
-        return productoRepository.guardar(cuenta);
-    }
 
     public Producto cambiarEstadoCuenta(String numeroCuenta, String nuevoEstado) {
         Producto cuenta = productoRepository.buscarPorNumeroCuenta(numeroCuenta)
