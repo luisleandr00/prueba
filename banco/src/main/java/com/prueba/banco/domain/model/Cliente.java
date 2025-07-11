@@ -21,12 +21,12 @@ public class Cliente {
     @Pattern(regexp = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Formato de email inválido")
     private String email;
 
-    @Column(nullable = false, length = 2)
-    @Size(min = 2, message = "El nombre debe tener al menos 2 caracteres")
+    @Column(nullable = false, length = 100)
+    @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
     private String nombres;
 
-    @Column(nullable = false)
-    @Size(min = 2, message = "El apellido debe tener al menos 2 caracteres")
+    @Column(nullable = false, length = 100)
+    @Size(min = 2, max = 100, message = "El apellido debe tener entre 2 y 100 caracteres")
     private String apellido;
 
     private LocalDate fechaNacimiento;
