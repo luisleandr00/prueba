@@ -6,23 +6,30 @@ import com.prueba.banco.domain.model.CuentaCorriente;
 import com.prueba.banco.domain.model.Producto;
 import com.prueba.banco.domain.ports.ClienteRepository;
 import com.prueba.banco.domain.ports.ProductoRepository;
-import lombok.RequiredArgsConstructor;
+import com.prueba.banco.domain.ports.ProductoService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
-@RequiredArgsConstructor
-public class ProductoServices {
+public class ProductoServices implements ProductoService {
+
     private final ProductoRepository productoRepository;
     private final ClienteRepository clienteRepository;
 
+    public ProductoServices(ProductoRepository productoRepository, ClienteRepository clienteRepository) {
+        this.productoRepository = productoRepository;
+        this.clienteRepository = clienteRepository;
+    }
+
+    @Override
     public Producto crearCuentaAhorros(Long clienteId, boolean exentaGMF) {
         Cliente cliente = clienteRepository.buscarPorId(clienteId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
 
-        CuentaAhorros cuenta = new CuentaAhorros(); // Usa constructor o builder
+        CuentaAhorros cuenta = new CuentaAhorros();
         cuenta.setTipoCuenta("AHORROS");
         cuenta.setNumeroCuenta(generarNumeroCuenta("53"));
         cuenta.setEstado("ACTIVA");
@@ -33,13 +40,14 @@ public class ProductoServices {
         return productoRepository.guardar(cuenta);
     }
 
+    @Override
     public Producto crearCuentaCorriente(Long clienteId, boolean exentaGMF) {
         Cliente cliente = clienteRepository.buscarPorId(clienteId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
 
         CuentaCorriente cuenta = new CuentaCorriente();
-        cuenta.setTipoCuenta("AHORROS");
-        cuenta.setNumeroCuenta(generarNumeroCuenta("53"));
+        cuenta.setTipoCuenta("CORRIENTE");
+        cuenta.setNumeroCuenta(generarNumeroCuenta("33"));
         cuenta.setEstado("ACTIVA");
         cuenta.setSaldo(BigDecimal.ZERO);
         cuenta.setExentaGMF(exentaGMF);
@@ -48,12 +56,7 @@ public class ProductoServices {
         return productoRepository.guardar(cuenta);
     }
 
-    private String generarNumeroCuenta(String prefijo) {
-        return prefijo + String.format("%08d", new Random().nextInt(100000000));
-    }
-
-
-
+    @Override
     public Producto cambiarEstadoCuenta(String numeroCuenta, String nuevoEstado) {
         Producto cuenta = productoRepository.buscarPorNumeroCuenta(numeroCuenta)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
@@ -64,5 +67,19 @@ public class ProductoServices {
 
         cuenta.setEstado(nuevoEstado.toUpperCase());
         return productoRepository.guardar(cuenta);
+    }
+
+    @Override
+    public Optional<Producto> buscarPorNumeroCuenta(String numeroCuenta) {
+        return productoRepository.buscarPorNumeroCuenta(numeroCuenta);
+    }
+
+    private String generarNumeroCuenta(String prefijo) {
+        String numeroGenerado;
+        do {
+            numeroGenerado = prefijo + String.format("%08d", new Random().nextInt(100000000));
+        } while (productoRepository.buscarPorNumeroCuenta(numeroGenerado).isPresent());
+
+        return numeroGenerado;
     }
 }

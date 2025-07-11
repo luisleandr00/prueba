@@ -6,25 +6,42 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TransaccionMapper {
+
     public TransaccionesDTO toDto(Transacciones transaccion) {
-        return TransaccionesDTO.builder()
-                .id(transaccion.getId())
-                .tipo(transaccion.getTipo())
-                .monto(transaccion.getMonto())
-                .productoOrigenId(transaccion.getProductoOrigen() != null ? transaccion.getProductoOrigen().getId() : null)
-                .productoDestinoId(transaccion.getProductoDestino() != null ? transaccion.getProductoDestino().getId() : null)
-                .fecha(transaccion.getFecha())
-                .estado(transaccion.getEstado())
-                .build();
+        if (transaccion == null) {
+            return null;
+        }
+
+        TransaccionesDTO dto = new TransaccionesDTO();
+        dto.setId(transaccion.getId());
+        dto.setTipo(transaccion.getTipo());
+        dto.setMonto(transaccion.getMonto());
+        dto.setFecha(transaccion.getFecha());
+        dto.setEstado(transaccion.getEstado());
+
+        if (transaccion.getProductoOrigen() != null) {
+            dto.setProductoOrigenId(transaccion.getProductoOrigen().getId());
+        }
+
+        if (transaccion.getProductoDestino() != null) {
+            dto.setProductoDestinoId(transaccion.getProductoDestino().getId());
+        }
+
+        return dto;
     }
 
     public Transacciones toDomain(TransaccionesDTO transaccionDTO) {
-        return Transacciones.builder()
-                .id(transaccionDTO.getId())
-                .tipo(transaccionDTO.getTipo())
-                .monto(transaccionDTO.getMonto())
-                .fecha(transaccionDTO.getFecha())
-                .estado(transaccionDTO.getEstado())
-                .build();
+        if (transaccionDTO == null) {
+            return null;
+        }
+
+        Transacciones transaccion = new Transacciones();
+        transaccion.setId(transaccionDTO.getId());
+        transaccion.setTipo(transaccionDTO.getTipo());
+        transaccion.setMonto(transaccionDTO.getMonto());
+        transaccion.setFecha(transaccionDTO.getFecha());
+        transaccion.setEstado(transaccionDTO.getEstado());
+
+        return transaccion;
     }
 }

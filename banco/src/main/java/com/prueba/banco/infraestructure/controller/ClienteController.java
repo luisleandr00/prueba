@@ -1,10 +1,9 @@
 package com.prueba.banco.infraestructure.controller;
 
-
 import com.prueba.banco.application.dto.ClienteDTO;
 import com.prueba.banco.application.mapper.ClienteMapper;
+import com.prueba.banco.domain.model.Cliente;
 import com.prueba.banco.domain.ports.ClienteService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,49 +13,77 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/clientes")
-@RequiredArgsConstructor
 public class ClienteController {
 
     private final ClienteService clienteService;
     private final ClienteMapper clienteMapper;
 
+    public ClienteController(ClienteService clienteService, ClienteMapper clienteMapper) {
+        this.clienteService = clienteService;
+        this.clienteMapper = clienteMapper;
+    }
+
     @PostMapping
     public ResponseEntity<ClienteDTO> crearCliente(@RequestBody ClienteDTO clienteDTO) {
-        return new ResponseEntity<>(
-                clienteMapper.toDto(clienteService.crearCliente(clienteMapper.toDomain(clienteDTO))),
-                HttpStatus.CREATED
-        );
+        try {
+            Cliente cliente = clienteMapper.toDomain(clienteDTO);
+            Cliente clienteCreado = clienteService.crearCliente(cliente);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(clienteMapper.toDto(clienteCreado));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ClienteDTO> actualizarCliente(
             @PathVariable Long id,
-            @RequestBody ClienteDTO clienteDTO
-    ) {
-        return clienteService.actualizarCliente(id, clienteMapper.toDomain(clienteDTO))
-                .map(cliente -> ResponseEntity.ok(clienteMapper.toDto(cliente)))
-                .orElse(ResponseEntity.notFound().build());
+            @RequestBody ClienteDTO clienteDTO) {
+        try {
+            return clienteService.actualizarCliente(id, clienteMapper.toDomain(clienteDTO))
+                    .map(cliente -> ResponseEntity.ok(clienteMapper.toDto(cliente)))
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarCliente(@PathVariable Long id) {
-        clienteService.eliminarCliente(id);
-        return ResponseEntity.noContent().build();
+        try {
+            clienteService.eliminarCliente(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ClienteDTO> buscarPorId(@PathVariable Long id) {
-        return clienteService.buscarPorId(id)
-                .map(cliente -> ResponseEntity.ok(clienteMapper.toDto(cliente)))
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            return clienteService.buscarPorId(id)
+                    .map(cliente -> ResponseEntity.ok(clienteMapper.toDto(cliente)))
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping
     public ResponseEntity<List<ClienteDTO>> listarTodos() {
-        return ResponseEntity.ok(
-                clienteService.listarTodos().stream()
-                        .map(clienteMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+        try {
+            List<ClienteDTO> clientes = clienteService.listarTodos().stream()
+                    .map(clienteMapper::toDto)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(clientes);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
