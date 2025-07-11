@@ -1,11 +1,13 @@
 package com.prueba.banco.application.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+
 import java.time.LocalDate;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClienteDTO {
     private Long id;
     private String tipoIdentificacion;

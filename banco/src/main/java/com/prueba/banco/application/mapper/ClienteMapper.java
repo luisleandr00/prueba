@@ -6,27 +6,27 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ClienteMapper {
-    public ClienteDTO toDto(Cliente cliente) {
-        return ClienteDTO.builder()
-                .id(cliente.getId())
-                .tipoIdentificacion(cliente.getTipoIdentificacion())
-                .numeroIdentificacion(cliente.getNumeroIdentificacion())
-                .nombres(cliente.getNombres())
-                .apellido(cliente.getApellido())
-                .email(cliente.getEmail())
-                .fechaNacimiento(cliente.getFechaNacimiento())
-                .build();
-    }
+        public ClienteDTO toDto(Cliente cliente) {
+            return ClienteDTO.builder()
+                    .id(cliente.getId())
+                    .tipoIdentificacion(cliente.getTipoIdentificacion())
+                    .numeroIdentificacion(cliente.getNumeroIdentificacion())
+                    .nombres(cliente.getNombres())
+                    .apellido(cliente.getApellido())
+                    .email(cliente.getEmail())
+                    .fechaNacimiento(cliente.getFechaNacimiento())
+                    .build();
+        }
 
-    public Cliente toDomain(ClienteDTO clienteDTO) {
-        return Cliente.builder()
-                .id(clienteDTO.getId())
-                .tipoIdentificacion(clienteDTO.getTipoIdentificacion())
-                .numeroIdentificacion(clienteDTO.getNumeroIdentificacion())
-                .nombres(clienteDTO.getNombres())
-                .apellido(clienteDTO.getApellido())
-                .email(clienteDTO.getEmail())
-                .fechaNacimiento(clienteDTO.getFechaNacimiento())
-                .build();
+        public Cliente toDomain(ClienteDTO clienteDTO) {
+            return Cliente.builder()
+                    .id(clienteDTO.getId())
+                    .tipoIdentificacion(clienteDTO.getTipoIdentificacion())
+                    .numeroIdentificacion(clienteDTO.getNumeroIdentificacion())
+                    .nombres(clienteDTO.getNombres())
+                    .apellido(clienteDTO.getApellido())
+                    .email(clienteDTO.getEmail())
+                    .fechaNacimiento(clienteDTO.getFechaNacimiento())
+                    .build();
+        }
     }
-}

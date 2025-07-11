@@ -20,7 +20,7 @@ public class Transacciones {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String tipo; // CONSIGNACION, RETIRO, TRANSFERENCIA
+    private String tipo;
     private BigDecimal monto;
 
     @ManyToOne
