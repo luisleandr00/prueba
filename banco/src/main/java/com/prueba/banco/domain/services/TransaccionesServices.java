@@ -14,15 +14,15 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
-public class TransaccionesServicesImpl implements TransaccionesService {
+public class TransaccionesServices implements TransaccionesService {
 
     private final TransaccionRepository transaccionRepository;
     private final ProductoRepository productoRepository;
     private final TransaccionMapper transaccionMapper;
 
-    public TransaccionesServicesImpl(TransaccionRepository transaccionRepository,
-                                    ProductoRepository productoRepository,
-                                    TransaccionMapper transaccionMapper) {
+    public TransaccionesServices(TransaccionRepository transaccionRepository,
+                                 ProductoRepository productoRepository,
+                                 TransaccionMapper transaccionMapper) {
         this.transaccionRepository = transaccionRepository;
         this.productoRepository = productoRepository;
         this.transaccionMapper = transaccionMapper;
