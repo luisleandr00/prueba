@@ -31,7 +31,7 @@ public class TransaccionesServices implements TransaccionesService {
     @Override
     @Transactional
     public TransaccionesDTO realizarTransferencia(String numeroOrigen, String numeroDestino, BigDecimal monto) {
-        // Validaciones
+
         if (numeroOrigen.equals(numeroDestino)) {
             throw new IllegalArgumentException("No se puede transferir a la misma cuenta");
         }
@@ -40,25 +40,25 @@ public class TransaccionesServices implements TransaccionesService {
             throw new IllegalArgumentException("El monto debe ser mayor a cero");
         }
 
-        // Buscar cuentas
+
         Producto origen = productoRepository.buscarPorNumeroCuenta(numeroOrigen)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta origen no encontrada"));
 
         Producto destino = productoRepository.buscarPorNumeroCuenta(numeroDestino)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta destino no encontrada"));
 
-        // Validar saldos
+
         origen.validarSaldo(monto.negate());
         destino.validarSaldo(monto);
 
-        // Actualizar saldos
+
         origen.setSaldo(origen.getSaldo().subtract(monto));
         destino.setSaldo(destino.getSaldo().add(monto));
 
         productoRepository.guardar(origen);
         productoRepository.guardar(destino);
 
-        // Crear transacción sin Builder
+
         Transacciones transaccion = new Transacciones();
         transaccion.setTipo("TRANSFERENCIA");
         transaccion.setMonto(monto);
@@ -74,7 +74,7 @@ public class TransaccionesServices implements TransaccionesService {
     @Override
     @Transactional
     public TransaccionesDTO realizarRetiro(String numeroCuenta, BigDecimal monto) {
-        // Validaciones
+
         if (monto.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El monto debe ser mayor a cero");
         }
@@ -82,14 +82,14 @@ public class TransaccionesServices implements TransaccionesService {
         Producto cuenta = productoRepository.buscarPorNumeroCuenta(numeroCuenta)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
 
-        // Validar saldo
+
         cuenta.validarSaldo(monto.negate());
 
-        // Actualizar saldo
+
         cuenta.setSaldo(cuenta.getSaldo().subtract(monto));
         productoRepository.guardar(cuenta);
 
-        // Crear transacción sin Builder
+
         Transacciones transaccion = new Transacciones();
         transaccion.setTipo("RETIRO");
         transaccion.setMonto(monto);
@@ -104,7 +104,7 @@ public class TransaccionesServices implements TransaccionesService {
     @Override
     @Transactional
     public TransaccionesDTO realizarConsignacion(String numeroCuenta, BigDecimal monto) {
-        // Validaciones
+
         if (monto.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El monto debe ser mayor a cero");
         }
@@ -112,16 +112,16 @@ public class TransaccionesServices implements TransaccionesService {
         Producto cuenta = productoRepository.buscarPorNumeroCuenta(numeroCuenta)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
 
-        // Validar cuenta
+
         if ("CANCELADA".equalsIgnoreCase(cuenta.getEstado())) {
             throw new IllegalStateException("No se puede consignar a una cuenta cancelada");
         }
 
-        // Actualizar saldo
+
         cuenta.setSaldo(cuenta.getSaldo().add(monto));
         productoRepository.guardar(cuenta);
 
-        // Crear transacción sin Builder
+
         Transacciones transaccion = new Transacciones();
         transaccion.setTipo("CONSIGNACION");
         transaccion.setMonto(monto);

@@ -14,7 +14,7 @@ public class TransaccionesController {
 
     private final TransaccionesService transaccionesService;
 
-    // Inyección de dependencias por constructor (sin Lombok)
+
     public TransaccionesController(TransaccionesService transaccionesService) {
         this.transaccionesService = transaccionesService;
     }
@@ -25,7 +25,7 @@ public class TransaccionesController {
             @RequestParam String numeroDestino,
             @RequestParam BigDecimal monto) {
 
-        // Validación básica del monto
+
         if (monto.compareTo(BigDecimal.ZERO) <= 0) {
             return ResponseEntity.badRequest().build();
         }
@@ -48,7 +48,7 @@ public class TransaccionesController {
             @RequestParam String numeroCuenta,
             @RequestParam BigDecimal monto) {
 
-        // Validación básica del monto
+
         if (monto.compareTo(BigDecimal.ZERO) <= 0) {
             return ResponseEntity.badRequest().build();
         }
@@ -70,7 +70,7 @@ public class TransaccionesController {
             @RequestParam String numeroCuenta,
             @RequestParam BigDecimal monto) {
 
-        // Validación básica del monto
+
         if (monto.compareTo(BigDecimal.ZERO) <= 0) {
             return ResponseEntity.badRequest().build();
         }

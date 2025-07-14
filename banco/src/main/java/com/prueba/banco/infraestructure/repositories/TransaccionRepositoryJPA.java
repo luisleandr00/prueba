@@ -4,7 +4,6 @@ import com.prueba.banco.domain.model.Transacciones;
 import com.prueba.banco.domain.ports.TransaccionRepository;
 import com.prueba.banco.infraestructure.mappers.TransaccionEntityMapper;
 import com.prueba.banco.infraestructure.persistence.TransaccionEntity;
-import com.prueba.banco.infraestructure.repositories.TransaccionJPARepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

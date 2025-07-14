@@ -1,7 +1,6 @@
 package com.prueba.banco.domain.model;
 
 import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 

@@ -24,7 +24,6 @@ public class ClienteEntity {
 
     private LocalDateTime fechaModificacion;
 
-    // Getters y Setters completos
     public Long getId() {
         return id;
     }

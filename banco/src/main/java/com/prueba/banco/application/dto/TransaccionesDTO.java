@@ -12,7 +12,7 @@ public class TransaccionesDTO {
     private LocalDateTime fecha;
     private String estado;
 
-    // Getters y Setters manuales
+
     public Long getId() {
         return id;
     }
