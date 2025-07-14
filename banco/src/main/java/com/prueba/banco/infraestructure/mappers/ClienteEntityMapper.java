@@ -23,7 +23,7 @@ public class ClienteEntityMapper {
         cliente.setEmail(entity.getEmail());
         cliente.setFechaNacimiento(entity.getFechaNacimiento());
 
-        // Manejo seguro de fechas
+
         LocalDateTime fechaCreacion = entity.getFechaCreacion() != null ?
                 entity.getFechaCreacion() : LocalDateTime.now();
         LocalDateTime fechaModificacion = entity.getFechaModificacion() != null ?

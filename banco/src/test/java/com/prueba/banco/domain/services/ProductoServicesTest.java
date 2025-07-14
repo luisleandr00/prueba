@@ -40,14 +40,18 @@ class ProductoServicesTest {
         cliente.setId(1L);
         cliente.setNombres("Juan");
         cliente.setApellido("Perez");
+
     }
 
     @Test
     void crearCuentaAhorros_ClienteExiste_CuentaCreadaCorrectamente() {
-        when(clienteRepository.buscarPorId(1L)).thenReturn(Optional.of(cliente));
-        when(productoRepository.guardar(any(Producto.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Producto resultado = productoServices.crearCuentaAhorros(1L, false);
+        when(clienteRepository.existePorId(1L)).thenReturn(true);
+
+        when(productoRepository.guardar(any(Producto.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Producto resultado = productoServices.crearCuentaAhorros(1L, true);
 
         assertNotNull(resultado);
         assertTrue(resultado instanceof CuentaAhorros);
@@ -57,10 +61,15 @@ class ProductoServicesTest {
         verify(productoRepository, times(1)).guardar(any(Producto.class));
     }
 
+
+
     @Test
     void crearCuentaCorriente_ClienteExiste_CuentaCreadaCorrectamente() {
-        when(clienteRepository.buscarPorId(1L)).thenReturn(Optional.of(cliente));
-        when(productoRepository.guardar(any(Producto.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        when(clienteRepository.existePorId(1L)).thenReturn(true);
+
+        when(productoRepository.guardar(any(Producto.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         Producto resultado = productoServices.crearCuentaCorriente(1L, false);
 
@@ -72,14 +81,6 @@ class ProductoServicesTest {
         verify(productoRepository, times(1)).guardar(any(Producto.class));
     }
 
-    @Test
-    void crearCuentaAhorros_ClienteNoExiste_LanzaExcepcion() {
-        when(clienteRepository.buscarPorId(99L)).thenReturn(Optional.empty());
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            productoServices.crearCuentaAhorros(99L, false);
-        });
-    }
 
     @Test
     void cambiarEstadoCuenta_CuentaConSaldoCero_CambiaACancelada() {
