@@ -1,6 +1,5 @@
 package com.prueba.banco.domain.services;
 
-import com.prueba.banco.domain.model.Cliente;
 import com.prueba.banco.domain.model.CuentaAhorros;
 import com.prueba.banco.domain.model.CuentaCorriente;
 import com.prueba.banco.domain.model.Producto;
@@ -26,8 +25,10 @@ public class ProductoServices implements ProductoService {
 
     @Override
     public Producto crearCuentaAhorros(Long clienteId, boolean exentaGMF) {
-        Cliente cliente = clienteRepository.buscarPorId(clienteId)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
+
+        if (!clienteRepository.existePorId(clienteId)) {
+            throw new IllegalArgumentException("Cliente no encontrado");
+        }
 
         CuentaAhorros cuenta = new CuentaAhorros();
         cuenta.setTipoCuenta("AHORROS");
@@ -35,15 +36,17 @@ public class ProductoServices implements ProductoService {
         cuenta.setEstado("ACTIVA");
         cuenta.setSaldo(BigDecimal.ZERO);
         cuenta.setExentaGMF(exentaGMF);
-        cuenta.setCliente(cliente);
+        cuenta.setClienteId(clienteId);
 
         return productoRepository.guardar(cuenta);
     }
 
     @Override
     public Producto crearCuentaCorriente(Long clienteId, boolean exentaGMF) {
-        Cliente cliente = clienteRepository.buscarPorId(clienteId)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
+
+        if (!clienteRepository.existePorId(clienteId)) {
+            throw new IllegalArgumentException("Cliente no encontrado");
+        }
 
         CuentaCorriente cuenta = new CuentaCorriente();
         cuenta.setTipoCuenta("CORRIENTE");
@@ -51,10 +54,11 @@ public class ProductoServices implements ProductoService {
         cuenta.setEstado("ACTIVA");
         cuenta.setSaldo(BigDecimal.ZERO);
         cuenta.setExentaGMF(exentaGMF);
-        cuenta.setCliente(cliente);
+        cuenta.setClienteId(clienteId);
 
         return productoRepository.guardar(cuenta);
     }
+
 
     @Override
     public Producto cambiarEstadoCuenta(String numeroCuenta, String nuevoEstado) {

@@ -1,43 +1,55 @@
 package com.prueba.banco.infraestructure.repositories;
 
 
-import com.prueba.banco.domain.model.Cliente;
 import com.prueba.banco.domain.model.Producto;
 import com.prueba.banco.domain.ports.ProductoRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.prueba.banco.infraestructure.mappers.ProductoEntityMapper;
+import com.prueba.banco.infraestructure.persistence.ProductoEntity;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepositoryJPA extends JpaRepository<Producto, Long>, ProductoRepository {
+public class ProductRepositoryJPA implements ProductoRepository {
 
-    @Override
-    default Producto guardar(Producto producto) {
-        return save(producto);
+    private final ProductoJPADataRepository jpaRepository;
+    private final ProductoEntityMapper mapper;
+
+    public ProductRepositoryJPA(ProductoJPADataRepository jpaRepository,
+                                  ProductoEntityMapper mapper) {
+        this.jpaRepository = jpaRepository;
+        this.mapper = mapper;
     }
 
     @Override
-    default Optional<Producto> buscarPorId(Long id) {
-        return findById(id);
+    public Producto guardar(Producto producto) {
+        ProductoEntity entity = mapper.toEntity(producto);
+        return mapper.toDomain(jpaRepository.save(entity));
     }
 
     @Override
-    default Optional<Producto> buscarPorNumeroCuenta(String numeroCuenta) {
-        return findByNumeroCuenta(numeroCuenta);
+    public Optional<Producto> buscarPorId(Long id) {
+        return jpaRepository.findById(id)
+                .map(mapper::toDomain);
     }
 
     @Override
-    default List<Producto> listarPorCliente(Cliente cliente) {
-        return findByCliente(cliente);
+    public Optional<Producto> buscarPorNumeroCuenta(String numeroCuenta) {
+        return jpaRepository.findByNumeroCuenta(numeroCuenta)
+                .map(mapper::toDomain);
     }
 
     @Override
-    default void eliminar(Producto producto) {
-        delete(producto);
+    public List<Producto> listarPorClienteId(Long clienteId) {
+        return jpaRepository.findByClienteId(clienteId)
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 
-
-    Optional<Producto> findByNumeroCuenta(String numeroCuenta);
-    List<Producto> findByCliente(Cliente cliente);
+    @Override
+    public void eliminar(Producto producto) {
+        jpaRepository.delete(mapper.toEntity(producto));
+    }
 }

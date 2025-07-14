@@ -1,27 +1,30 @@
-package com.prueba.banco.domain.model;
+package com.prueba.banco.infraestructure.persistence;
 
+
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 
-public class Cliente {
+@Entity
+@Table(name = "clientes")
+public class ClienteEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String tipoIdentificacion;
     private String numeroIdentificacion;
     private String nombres;
     private String apellido;
     private String email;
     private LocalDate fechaNacimiento;
+
+    @Column(updatable = false)
     private LocalDateTime fechaCreacion;
+
     private LocalDateTime fechaModificacion;
 
-    public Cliente() {
-        this.fechaCreacion = LocalDateTime.now();
-        this.fechaModificacion = LocalDateTime.now();
-    }
-
-
-
+    // Getters y Setters completos
     public Long getId() {
         return id;
     }
@@ -46,14 +49,6 @@ public class Cliente {
         this.numeroIdentificacion = numeroIdentificacion;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getNombres() {
         return nombres;
     }
@@ -68,6 +63,14 @@ public class Cliente {
 
     public void setApellido(String apellido) {
         this.apellido = apellido;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public LocalDate getFechaNacimiento() {
@@ -86,10 +89,6 @@ public class Cliente {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public void actualizarFechaModificacion() {
-        this.fechaModificacion = LocalDateTime.now();
-    }
-
     public LocalDateTime getFechaModificacion() {
         return fechaModificacion;
     }
@@ -98,8 +97,14 @@ public class Cliente {
         this.fechaModificacion = fechaModificacion;
     }
 
+    @PrePersist
+    protected void onCreate() {
+        this.fechaCreacion = LocalDateTime.now();
+        this.fechaModificacion = LocalDateTime.now();
+    }
 
-    public boolean esMayorDeEdad() {
-        return Period.between(fechaNacimiento, LocalDate.now()).getYears() >= 18;
+    @PreUpdate
+    protected void onUpdate() {
+        this.fechaModificacion = LocalDateTime.now();
     }
-    }
+}

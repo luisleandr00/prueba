@@ -1,25 +1,43 @@
 package com.prueba.banco.infraestructure.repositories;
 
-
-import com.prueba.banco.domain.model.Producto;
 import com.prueba.banco.domain.model.Transacciones;
 import com.prueba.banco.domain.ports.TransaccionRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.prueba.banco.infraestructure.mappers.TransaccionEntityMapper;
+import com.prueba.banco.infraestructure.persistence.TransaccionEntity;
+import com.prueba.banco.infraestructure.repositories.TransaccionJPARepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface TransaccionRepositoryJPA extends JpaRepository<Transacciones, Long>, TransaccionRepository {
+public class TransaccionRepositoryJPA implements TransaccionRepository {
 
-    @Override
-    default Transacciones guardar(Transacciones transaccion) {
-        return save(transaccion);
+    private final TransaccionJPARepository jpaRepository;
+    private final TransaccionEntityMapper mapper;
+
+    public TransaccionRepositoryJPA(TransaccionJPARepository jpaRepository,
+                                     TransaccionEntityMapper mapper) {
+        this.jpaRepository = jpaRepository;
+        this.mapper = mapper;
     }
 
     @Override
-    default List<Transacciones> listarPorProducto(Producto producto) {
-        return findByProductoOrigenOrProductoDestino(producto, producto);
+    public Transacciones guardar(Transacciones transaccion) {
+        TransaccionEntity entity = mapper.toEntity(transaccion);
+        return mapper.toDomain(jpaRepository.save(entity));
     }
 
-    List<Transacciones> findByProductoOrigenOrProductoDestino(Producto origen, Producto destino);
+    @Override
+    public Optional<Transacciones> buscarPorId(Long id) {
+        return jpaRepository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Transacciones> listarPorProductoId(Long productoId) {
+        return jpaRepository.findByProductoOrigenIdOrProductoDestinoId(productoId, productoId)
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
 }

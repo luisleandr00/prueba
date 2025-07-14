@@ -10,4 +10,5 @@ public interface ClienteRepository {
     List<Cliente> listarTodos();
     void eliminar(Cliente cliente);
     Optional<Cliente> buscarPorIdentificacion(String tipo, String numero);
+    boolean existePorId(Long id);
 }

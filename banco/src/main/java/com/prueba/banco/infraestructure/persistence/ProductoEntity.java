@@ -1,24 +1,49 @@
-package com.prueba.banco.domain.model;
+package com.prueba.banco.infraestructure.persistence;
 
-import com.prueba.banco.domain.model.Cliente;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public abstract class Producto {
+@Entity
+@Table(name = "productos")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_producto", discriminatorType = DiscriminatorType.STRING)
+public class ProductoEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String tipoCuenta;
     private String numeroCuenta;
     private String estado;
     private BigDecimal saldo;
     private boolean exentaGMF;
-    private Long clienteId;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaModificacion;
 
-    public Producto() {
+    @Column(name = "cliente_id")
+    private Long clienteId;
+
+    @PrePersist
+    protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
         this.fechaModificacion = LocalDateTime.now();
     }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.fechaModificacion = LocalDateTime.now();
+    }
+
+
+    public Long getClienteId() {
+        return clienteId;
+    }
+
+    public void setClienteId(Long clienteId) {
+        this.clienteId = clienteId;
+    }
+
 
 
     public Long getId() {
@@ -85,17 +110,5 @@ public abstract class Producto {
         this.fechaModificacion = fechaModificacion;
     }
 
-    public Long getClienteId() {
-        return clienteId;
-    }
 
-    public void setClienteId(Long clienteId) {
-        this.clienteId = clienteId;
-    }
-
-    public abstract void validarSaldo(BigDecimal monto);
-
-    public void actualizarFechaModificacion() {
-        this.fechaModificacion = LocalDateTime.now();
-    }
 }

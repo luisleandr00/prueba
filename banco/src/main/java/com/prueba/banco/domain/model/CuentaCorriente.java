@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Entity
+
 @DiscriminatorValue("CORRIENTE")
 public class CuentaCorriente extends Producto {
     private static final BigDecimal LIMITE_SOBREGIRO = new BigDecimal("1000000");

@@ -3,7 +3,6 @@ package com.prueba.banco.domain.services;
 import com.prueba.banco.domain.model.Cliente;
 import com.prueba.banco.domain.model.Producto;
 import com.prueba.banco.domain.ports.ClienteRepository;
-import com.prueba.banco.domain.ports.ClienteService;
 import com.prueba.banco.domain.ports.ProductoRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,34 +11,33 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ClienteServices implements ClienteService {
+public class ClienteServices {
 
     private final ClienteRepository clienteRepository;
     private final ProductoRepository productoRepository;
 
-    public ClienteServices(ClienteRepository clienteRepository, ProductoRepository productoRepository) {
+
+    public ClienteServices(ClienteRepository clienteRepository,
+                           ProductoRepository productoRepository) {
         this.clienteRepository = clienteRepository;
         this.productoRepository = productoRepository;
     }
 
-    @Override
     public Cliente crearCliente(Cliente cliente) {
         validarCliente(cliente);
         cliente.setFechaCreacion(LocalDateTime.now());
         return clienteRepository.guardar(cliente);
     }
 
-    @Override
     public Optional<Cliente> actualizarCliente(Long id, Cliente clienteActualizado) {
         validarCliente(clienteActualizado);
-
         return clienteRepository.buscarPorId(id).map(cliente -> {
             actualizarCamposCliente(cliente, clienteActualizado);
+            cliente.actualizarFechaModificacion();
             return clienteRepository.guardar(cliente);
         });
     }
 
-    @Override
     public void eliminarCliente(Long id) {
         clienteRepository.buscarPorId(id).ifPresent(cliente -> {
             validarEliminacionCliente(cliente);
@@ -47,12 +45,10 @@ public class ClienteServices implements ClienteService {
         });
     }
 
-    @Override
     public Optional<Cliente> buscarPorId(Long id) {
         return clienteRepository.buscarPorId(id);
     }
 
-    @Override
     public List<Cliente> listarTodos() {
         return clienteRepository.listarTodos();
     }
@@ -85,7 +81,7 @@ public class ClienteServices implements ClienteService {
     }
 
     private void validarEliminacionCliente(Cliente cliente) {
-        List<Producto> productos = productoRepository.listarPorCliente(cliente);
+        List<Producto> productos = productoRepository.listarPorClienteId(cliente.getId());
         if (!productos.isEmpty()) {
             throw new IllegalStateException("No se puede eliminar un cliente con productos vinculados");
         }

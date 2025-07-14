@@ -22,8 +22,8 @@ public class ProductoMapper {
         dto.setExentaGMF(producto.isExentaGMF());
         dto.setFechaCreacion(producto.getFechaCreacion());
 
-        if (producto.getCliente() != null) {
-            dto.setClienteId(producto.getCliente().getId());
+        if (producto.getClienteId() != null) {
+            dto.setClienteId(producto.getClienteId());
         }
 
         return dto;

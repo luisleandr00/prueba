@@ -1,41 +1,59 @@
 package com.prueba.banco.infraestructure.repositories;
 
+
 import com.prueba.banco.domain.model.Cliente;
 import com.prueba.banco.domain.ports.ClienteRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.prueba.banco.infraestructure.persistence.ClienteEntity;
+import com.prueba.banco.infraestructure.mappers.ClienteEntityMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ClienteRepositoryJPA extends JpaRepository<Cliente, Long>, ClienteRepository {
+public class ClienteRepositoryJPA implements ClienteRepository {
 
-    @Override
-    default Cliente guardar(Cliente cliente) {
-        return save(cliente);
+    private final ClienteJPADataRepository jpaRepository;
+    private final ClienteEntityMapper mapper;
+
+    public ClienteRepositoryJPA(ClienteJPADataRepository jpaRepository,
+                                ClienteEntityMapper mapper) {
+        this.jpaRepository = jpaRepository;
+        this.mapper = mapper;
     }
 
     @Override
-    default Optional<Cliente> buscarPorId(Long id) {
-        return findById(id);
+    public Cliente guardar(Cliente cliente) {
+        ClienteEntity entity = mapper.toEntity(cliente);
+        return mapper.toDomain(jpaRepository.save(entity));
+    }
+    @Override
+    public boolean existePorId(Long id) {
+        return jpaRepository.existsById(id);
     }
 
     @Override
-    default List<Cliente> listarTodos() {
-        return findAll();
+    public Optional<Cliente> buscarPorId(Long id) {
+        return jpaRepository.findById(id)
+                .map(mapper::toDomain);
     }
 
     @Override
-    default void eliminar(Cliente cliente) {
-        delete(cliente);
+    public List<Cliente> listarTodos() {
+        return jpaRepository.findAll()
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 
     @Override
-    default Optional<Cliente> buscarPorIdentificacion(String tipo, String numero) {
-        return findByTipoIdentificacionAndNumeroIdentificacion(tipo, numero);
+    public void eliminar(Cliente cliente) {
+        jpaRepository.delete(mapper.toEntity(cliente));
     }
 
-
-    Optional<Cliente> findByTipoIdentificacionAndNumeroIdentificacion(String tipo, String numero);
+    @Override
+    public Optional<Cliente> buscarPorIdentificacion(String tipo, String numero) {
+        return jpaRepository.findByTipoIdentificacionAndNumeroIdentificacion(tipo, numero)
+                .map(mapper::toDomain);
+    }
 }

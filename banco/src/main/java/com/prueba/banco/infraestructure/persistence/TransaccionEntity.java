@@ -1,22 +1,30 @@
-package com.prueba.banco.domain.model;
+package com.prueba.banco.infraestructure.persistence;
 
+import com.prueba.banco.domain.model.Producto;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class Transacciones {
+@Entity
+@Table(name = "transacciones")
+public class TransaccionEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String tipo;
     private BigDecimal monto;
+
+    @Column(name = "producto_origen_id")
     private Long productoOrigenId;
+
+    @Column(name = "producto_destino_id")
     private Long productoDestinoId;
+
     private LocalDateTime fecha;
     private String estado;
 
-
-    public Transacciones() {
-        this.fecha = LocalDateTime.now();
-        this.estado = "PENDIENTE";
-    }
+    // Getters y Setters
 
     public Long getId() {
         return id;

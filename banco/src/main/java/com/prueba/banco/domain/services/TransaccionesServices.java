@@ -62,8 +62,8 @@ public class TransaccionesServices implements TransaccionesService {
         Transacciones transaccion = new Transacciones();
         transaccion.setTipo("TRANSFERENCIA");
         transaccion.setMonto(monto);
-        transaccion.setProductoOrigen(origen);
-        transaccion.setProductoDestino(destino);
+        transaccion.setProductoOrigenId(origen.getId());
+        transaccion.setProductoDestinoId(destino.getId());
         transaccion.setFecha(LocalDateTime.now());
         transaccion.setEstado("EXITOSA");
 
@@ -93,7 +93,7 @@ public class TransaccionesServices implements TransaccionesService {
         Transacciones transaccion = new Transacciones();
         transaccion.setTipo("RETIRO");
         transaccion.setMonto(monto);
-        transaccion.setProductoOrigen(cuenta);
+        transaccion.setProductoOrigenId(cuenta.getId());
         transaccion.setFecha(LocalDateTime.now());
         transaccion.setEstado("EXITOSA");
 
@@ -125,7 +125,7 @@ public class TransaccionesServices implements TransaccionesService {
         Transacciones transaccion = new Transacciones();
         transaccion.setTipo("CONSIGNACION");
         transaccion.setMonto(monto);
-        transaccion.setProductoDestino(cuenta);
+        transaccion.setProductoDestinoId(cuenta.getId());
         transaccion.setFecha(LocalDateTime.now());
         transaccion.setEstado("EXITOSA");
 

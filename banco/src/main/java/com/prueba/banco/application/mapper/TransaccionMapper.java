@@ -19,12 +19,12 @@ public class TransaccionMapper {
         dto.setFecha(transaccion.getFecha());
         dto.setEstado(transaccion.getEstado());
 
-        if (transaccion.getProductoOrigen() != null) {
-            dto.setProductoOrigenId(transaccion.getProductoOrigen().getId());
+        if (transaccion.getProductoOrigenId() != null) {
+            dto.setProductoOrigenId(transaccion.getProductoOrigenId());
         }
 
-        if (transaccion.getProductoDestino() != null) {
-            dto.setProductoDestinoId(transaccion.getProductoDestino().getId());
+        if (transaccion.getProductoDestinoId() != null) {
+            dto.setProductoDestinoId(transaccion.getProductoDestinoId());
         }
 
         return dto;
